@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "CouchDB OpenAPI scheme generator Contributors"}
+    {name = "CouchDB OpenAPI scheme generator contributors"}
 ]
 keywords = ["couchdb", "openapi", "swagger", "api", "generator", "specification"]
 classifiers = [
