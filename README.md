@@ -21,7 +21,7 @@ This project has been updated for more convenient work with CouchDB and includes
 1. Clone the repository:
 
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/SasukeSagara/CouchDB-OpenAPI-scheme-generator.git
     cd couchdb-openapi-scheme-generator
     ```
 
