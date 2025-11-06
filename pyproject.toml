@@ -1,0 +1,10 @@
+[project]
+name = "couchdb-openapi-scheme-generator"
+version = "1.0.0"
+description = "CouchDB OpenAPI scheme generator"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.32.5",
+    "PyYAML>=6.0.2",
+]

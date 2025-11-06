@@ -1,0 +1,24 @@
+services:
+  couchdb:
+    image: couchdb:latest
+    container_name: couchdb
+    user: 5984:5984
+    environment:
+      - COUCHDB_USER=${COUCHDB_USER}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
+    env_file:
+      - .env
+    volumes:
+      - ./couchdb-data:/opt/couchdb/data
+      - ./couchdb-etc:/opt/couchdb/etc/local.d
+    ports:
+      - 5984:5984
+    restart: unless-stopped
+
+volumes:
+  couchdb-data:
+  couchdb-config:
+
+networks:
+  obsidian-network:
+    driver: bridge
