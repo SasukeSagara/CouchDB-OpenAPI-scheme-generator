@@ -21,7 +21,7 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/SasukeSagara/CouchDB-OpenAPI-scheme-generator?style=for-the-badge&logo=github)
 
 [![Views](https://komarev.com/ghpvc/?username=SasukeSagara&repo=CouchDB-OpenAPI-scheme-generator&style=for-the-badge&color=blueviolet&label=VIEWS)](https://github.com/SasukeSagara/CouchDB-OpenAPI-scheme-generator)
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FSasukeSagara%2FCouchDB-OpenAPI-scheme-generator&count_bg=%2379C83D&title_bg=%23555555&icon=github.svg&icon_color=%23E7E7E7&title=HITS&edge_flat=false)](https://hits.seeyoufarm.com)
+[![Visitor Badge](https://visitor-badge.laobi.icu/badge?page_id=SasukeSagara.CouchDB-OpenAPI-scheme-generator&left_color=green&right_color=blue&left_text=VISITORS)](https://github.com/SasukeSagara/CouchDB-OpenAPI-scheme-generator)
 
 </div>
 
