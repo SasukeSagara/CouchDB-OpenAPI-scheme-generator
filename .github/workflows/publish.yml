@@ -1,0 +1,36 @@
+name: Publish to PyPI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+      - dev
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Build package
+        run: uv build
+      - name: Check package
+        run: |
+          uv pip install twine
+          uv run twine check dist/*
+      - name: Publish to Test PyPI (dev branch)
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          uv run twine upload --repository testpypi dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+      - name: Publish to PyPI (master/main branch or release)
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.event_name == 'release'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist/
