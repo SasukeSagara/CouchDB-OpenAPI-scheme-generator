@@ -12,6 +12,8 @@
 
 [![License](https://img.shields.io/github/license/SasukeSagara/CouchDB-OpenAPI-scheme-generator?style=for-the-badge&logo=open-source-initiative&color=success)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![PyPI version](https://img.shields.io/pypi/v/couchdb-openapi-scheme-generator?style=for-the-badge&logo=pypi&logoColor=white&color=blue)](https://pypi.org/project/couchdb-openapi-scheme-generator/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/couchdb-openapi-scheme-generator?style=for-the-badge&logo=pypi&logoColor=white&color=green)](https://pypi.org/project/couchdb-openapi-scheme-generator/)
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-green?style=for-the-badge&logo=openapi-initiative&logoColor=white)](https://www.openapis.org/)
 
@@ -33,18 +35,28 @@
   - [📋 Table of Contents](#-table-of-contents)
   - [✨ Features](#-features)
   - [🎯 Description](#-description)
+    - [📋 Supported API Endpoints](#-supported-api-endpoints)
   - [📦 Requirements](#-requirements)
   - [🚀 Quick Start](#-quick-start)
+    - [Option 1: Using uvx (Recommended - No Installation Required)](#option-1-using-uvx-recommended---no-installation-required)
+    - [Option 2: Install from PyPI](#option-2-install-from-pypi)
+    - [Option 3: Development Setup](#option-3-development-setup)
   - [💻 Installation](#-installation)
-    - [Step 1: Clone the repository](#step-1-clone-the-repository)
-    - [Step 2: Install dependencies](#step-2-install-dependencies)
+    - [📦 Install from PyPI](#-install-from-pypi)
+      - [Using pip](#using-pip)
+      - [Using uv](#using-uv)
+      - [Using pipx (Isolated Installation)](#using-pipx-isolated-installation)
+    - [🚀 Using uvx (No Installation Required)](#-using-uvx-no-installation-required)
+    - [🔧 Development Installation](#-development-installation)
   - [📖 Usage](#-usage)
     - [🐳 Starting CouchDB](#-starting-couchdb)
     - [📄 Generating OpenAPI Specification](#-generating-openapi-specification)
-      - [Basic Usage](#basic-usage)
-      - [Advanced Usage](#advanced-usage)
+      - [Method 1: Using uvx (Recommended)](#method-1-using-uvx-recommended)
+      - [Method 2: Using Installed Package](#method-2-using-installed-package)
+      - [Method 3: Development Mode](#method-3-development-mode)
       - [📋 Parameters](#-parameters)
-    - [🎮 Running the Main Application](#-running-the-main-application)
+      - [📚 Generated Specification](#-generated-specification)
+    - [🎮 Running the Application](#-running-the-application)
   - [🏗️ Project Structure](#️-project-structure)
   - [🛠️ Development](#️-development)
     - [Setting Up Development Environment](#setting-up-development-environment)
@@ -68,6 +80,12 @@
 | 📊 **JSON/YAML** | Support for both JSON and YAML output formats | ✅ Ready |
 | 🔐 **Authentication** | Built-in support for CouchDB authentication | ✅ Ready |
 | ⚡ **Fast Setup** | Get started in minutes | ✅ Ready |
+| 📚 **Comprehensive API Coverage** | Full coverage of CouchDB API endpoints according to official documentation | ✅ Ready |
+| 🎯 **Server Endpoints** | Complete server management endpoints (tasks, cluster, nodes, etc.) | ✅ Ready |
+| 🗄️ **Database Operations** | Full database management (shards, security, compaction, etc.) | ✅ Ready |
+| 📝 **Design Documents** | Complete design document endpoints (views, search, show, list, update) | ✅ Ready |
+| 🔀 **Partitioned Databases** | Support for partitioned database operations | ✅ Ready |
+| 📋 **Local Documents** | Support for local (non-replicating) documents | ✅ Ready |
 
 ---
 
@@ -79,18 +97,57 @@ This project has been updated for more convenient work with CouchDB and includes
 - 📄 **Modern OpenAPI specification generator** for CouchDB API
 - 🛠️ **Utilities and tools** for interacting with the CouchDB server
 - 🚀 **Production-ready** setup with best practices
+- 📚 **Comprehensive API coverage** - The OpenAPI specification includes all major CouchDB API endpoints according to the [official CouchDB documentation](https://docs.couchdb.org/en/stable/api/)
+
+### 📋 Supported API Endpoints
+
+The generated OpenAPI specification includes comprehensive coverage of CouchDB API:
+
+- **Server Endpoints** (18+ endpoints): Server information, active tasks, cluster setup, database updates, membership, scheduler, node management, statistics, Prometheus metrics, UUID generation, resharding, and more
+- **Database Endpoints** (20+ endpoints): Database operations, design documents, bulk operations, indexes, shards, compaction, security, purging, revision management, and more
+- **Document Endpoints**: Full CRUD operations for documents and attachments
+- **Design Document Endpoints** (12+ endpoints): Views, search indexes, nouveau indexes, show/list/update functions, URL rewriting, and more
+- **Partitioned Database Endpoints** (5 endpoints): Partition information, queries, and views
+- **Local Documents Endpoints** (3 endpoints): Local document operations (non-replicating)
+- **User Endpoints**: User management in the `_users` database
 
 ---
 
 ## 📦 Requirements
 
 - 🐍 **Python** 3.11 or higher
-- 🐳 **Docker** and Docker Compose
-- 📦 **[uv](https://github.com/astral-sh/uv)** (Python package manager)
+- 📦 **Package manager** (optional): `pip`, `uv`, `pipx`, or `uvx`
 
 ---
 
 ## 🚀 Quick Start
+
+### Option 1: Using uvx (Recommended - No Installation Required)
+
+```bash
+# Generate OpenAPI specification directly without installation
+uvx couchdb-openapi-scheme-generator
+```
+
+That's it! 🎉 Your OpenAPI specification will be generated in `couchdb-openapi.json`
+
+### Option 2: Install from PyPI
+
+```bash
+# Install using pip
+pip install couchdb-openapi-scheme-generator
+
+# Or using uv
+uv pip install couchdb-openapi-scheme-generator
+
+# Or using pipx (for isolated installation)
+pipx install couchdb-openapi-scheme-generator
+
+# Then run
+couchdb-openapi-scheme-generator
+```
+
+### Option 3: Development Setup
 
 ```bash
 # 1. Clone the repository
@@ -100,37 +157,59 @@ cd couchdb-openapi-scheme-generator
 # 2. Install dependencies
 uv sync
 
-# 3. Start CouchDB
-docker-compose up -d
-
-# 4. Generate OpenAPI specification
+# 3. Run the generator
 uv run openapi_generator.py
 ```
-
-That's it! 🎉 Your OpenAPI specification will be generated in `couchdb-openapi.json`
 
 ---
 
 ## 💻 Installation
 
-### Step 1: Clone the repository
+### 📦 Install from PyPI
+
+The package is available on [PyPI](https://pypi.org/project/couchdb-openapi-scheme-generator/). You can install it using any Python package manager:
+
+#### Using pip
 
 ```bash
+pip install couchdb-openapi-scheme-generator
+```
+
+#### Using uv
+
+```bash
+uv pip install couchdb-openapi-scheme-generator
+```
+
+#### Using pipx (Isolated Installation)
+
+```bash
+pipx install couchdb-openapi-scheme-generator
+```
+
+### 🚀 Using uvx (No Installation Required)
+
+You can use the package directly without installation using `uvx`:
+
+```bash
+uvx couchdb-openapi-scheme-generator
+```
+
+This will automatically download and run the latest version from PyPI.
+
+### 🔧 Development Installation
+
+If you want to contribute or modify the code:
+
+```bash
+# 1. Clone the repository
 git clone https://github.com/SasukeSagara/CouchDB-OpenAPI-scheme-generator.git
 cd couchdb-openapi-scheme-generator
-```
 
-### Step 2: Install dependencies
-
-Install dependencies using `uv`:
-
-```bash
+# 2. Install dependencies using uv
 uv sync
-```
 
-For development dependencies:
-
-```bash
+# For development dependencies
 uv sync --dev
 ```
 
@@ -152,39 +231,56 @@ CouchDB will be available at `http://localhost:5984`
 
 ### 📄 Generating OpenAPI Specification
 
-Use `openapi_generator.py` to generate the OpenAPI specification for CouchDB API:
+Generate the OpenAPI specification for CouchDB API using one of the following methods:
 
-#### Basic Usage
+#### Method 1: Using uvx (Recommended)
 
 ```bash
 # Basic usage (local server)
-uv run openapi_generator.py
-```
+uvx couchdb-openapi-scheme-generator
 
-#### Advanced Usage
-
-```bash
 # With URL and credentials specified
-uv run openapi_generator.py \
+uvx couchdb-openapi-scheme-generator \
   --url http://localhost:5984 \
   --username admin \
   --password your_password
 
 # With custom output file
-uv run openapi_generator.py --output couchdb-api.json
+uvx couchdb-openapi-scheme-generator --output couchdb-api.json
 
 # Generate in YAML format
-uv run openapi_generator.py \
+uvx couchdb-openapi-scheme-generator \
   --format yaml \
   --output couchdb-api.yaml
+```
 
-# Full example with all options
-uv run openapi_generator.py \
+#### Method 2: Using Installed Package
+
+If you installed the package using `pip`, `uv`, or `pipx`:
+
+```bash
+# Basic usage
+couchdb-openapi-scheme-generator
+
+# With all options
+couchdb-openapi-scheme-generator \
   --url http://localhost:5984 \
   --username admin \
   --password your_password \
   --format json \
   --output my-couchdb-api.json
+```
+
+#### Method 3: Development Mode
+
+If you cloned the repository and installed dependencies:
+
+```bash
+# Using uv run
+uv run openapi_generator.py
+
+# Or directly with Python
+python openapi_generator.py
 ```
 
 #### 📋 Parameters
@@ -197,10 +293,41 @@ uv run openapi_generator.py \
 | `--output` | `-o` | Output file name | `couchdb-openapi.json` |
 | `--format` | `-f` | Output format (`json` or `yaml`) | `json` |
 
-### 🎮 Running the Main Application
+#### 📚 Generated Specification
+
+The generated OpenAPI specification includes:
+
+- ✅ **60+ API endpoints** covering all major CouchDB operations
+- ✅ **Complete request/response schemas** for all endpoints
+- ✅ **Query parameters** and path parameters properly documented
+- ✅ **Authentication support** via Basic Auth
+- ✅ **Error responses** with appropriate HTTP status codes
+- ✅ **Compatible with** Swagger UI, Postman, Insomnia, and other OpenAPI tools
+
+The specification is based on the [official CouchDB API documentation](https://docs.couchdb.org/en/stable/api/) and includes endpoints for:
+
+- Server management and monitoring
+- Database operations and administration
+- Document CRUD operations
+- Design documents and views
+- Search and indexing
+- Partitioned databases
+- Local documents
+- User management
+
+### 🎮 Running the Application
+
+After installation, you can run the generator using:
 
 ```bash
-uv run genopenapi_generatorerator.py
+# If installed via pip/pipx/uv
+couchdb-openapi-scheme-generator
+
+# Or using uvx (no installation needed)
+uvx couchdb-openapi-scheme-generator
+
+# Or in development mode
+uv run openapi_generator.py
 ```
 
 ---

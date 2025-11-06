@@ -237,31 +237,114 @@ class CouchDBSwaggerGenerator:
         responses, and status codes. Definitions conform to OpenAPI 3.0 standard.
 
         Supported endpoints:
+        Server endpoints:
         - GET /: CouchDB server information
         - GET /_all_dbs: List all databases in the instance
+        - GET /_active_tasks: List active tasks
+        - POST /_dbs_info: Get information about multiple databases
+        - GET /_cluster_setup: Get cluster setup status
+        - POST /_cluster_setup: Configure cluster
+        - GET /_db_updates: List database updates
+        - GET /_membership: Get cluster membership
+        - GET /_scheduler/jobs: List replication jobs
+        - GET /_scheduler/docs: List replication document jobs
+        - GET /_node/{node-name}: Get node information
+        - GET /_node/{node-name}/_stats: Get node statistics
+        - GET /_node/{node-name}/_prometheus: Get Prometheus metrics
+        - GET /_node/{node-name}/_smoosh/status: Get smoosh status
+        - GET /_node/{node-name}/_system: Get system information
+        - POST /_node/{node-name}/_restart: Restart node
+        - GET /_node/{node-name}/_versions: Get node versions
+        - POST /_search_analyze: Analyze search text
+        - POST /_nouveau_analyze: Analyze nouveau text
+        - GET /_up: Check server status
+        - GET /_uuids: Generate UUIDs
+        - GET /_reshard: Get resharding status
+        - POST /_reshard: Start resharding
+        - POST /_replicate: Replicate database
+
+        Database endpoints:
         - PUT /{db}: Create a new database
         - GET /{db}: Get database information
         - DELETE /{db}: Delete database
         - GET /{db}/_all_docs: Get all documents from the database
-        - GET /_users: Information about the system users database
-        - GET /_users/{user_id}: Get user document
-        - PUT /_users/{user_id}: Create or update user
+        - GET /{db}/_design_docs: Get all design documents
+        - POST /{db}/_bulk_get: Bulk get documents
+        - GET /{db}/_index: List indexes
+        - POST /{db}/_index: Create index
+        - DELETE /{db}/_index: Delete index
+        - POST /{db}/_explain: Explain query
+        - GET /{db}/_shards: Get database shards
+        - GET /{db}/_shards/{docid}: Get document shards
+        - POST /{db}/_sync_shards: Sync database shards
+        - POST /{db}/_compact: Compact database
+        - POST /{db}/_compact/{ddoc}: Compact design document
+        - POST /{db}/_ensure_full_commit: Ensure full commit
+        - POST /{db}/_view_cleanup: Cleanup view indexes
+        - POST /{db}/_search_cleanup: Cleanup search indexes
+        - POST /{db}/_nouveau_cleanup: Cleanup nouveau indexes
+        - GET /{db}/_security: Get database security
+        - PUT /{db}/_security: Set database security
+        - POST /{db}/_purge: Purge documents
+        - GET /{db}/_purged_infos: Get purged information
+        - GET /{db}/_purged_infos_limit: Get purged information limit
+        - PUT /{db}/_purged_infos_limit: Set purged information limit
+        - POST /{db}/_missing_revs: Get missing revisions
+        - POST /{db}/_revs_diff: Get revision differences
+        - GET /{db}/_revs_limit: Get revision limit
+        - PUT /{db}/_revs_limit: Set revision limit
+        - GET /{db}/_changes: Get database changes stream
+        - POST /{db}/_bulk_docs: Bulk document operations
+        - POST /{db}/_find: Query documents using Mango Query
+
+        Document endpoints:
         - GET /{db}/{docid}: Get document
         - PUT /{db}/{docid}: Create or update document
         - DELETE /{db}/{docid}: Delete document
         - HEAD /{db}/{docid}: Check document existence
-        - POST /{db}/_find: Query documents using Mango Query
-        - GET /{db}/_changes: Get database changes stream
-        - POST /{db}/_bulk_docs: Bulk document operations
-        - GET /{db}/_design/{ddoc}: Get design document
-        - PUT /{db}/_design/{ddoc}: Create or update design document
-        - DELETE /{db}/_design/{ddoc}: Delete design document
-        - GET /{db}/_design/{ddoc}/_view/{view}: Query a view
-        - POST /{db}/_design/{ddoc}/_view/{view}: Query a view via POST
         - GET /{db}/{docid}/{attachment}: Get attachment
         - PUT /{db}/{docid}/{attachment}: Add or update attachment
         - DELETE /{db}/{docid}/{attachment}: Delete attachment
-        - POST /_replicate: Replicate database
+
+        Design Document endpoints:
+        - GET /{db}/_design/{ddoc}: Get design document
+        - PUT /{db}/_design/{ddoc}: Create or update design document
+        - DELETE /{db}/_design/{ddoc}: Delete design document
+        - GET /{db}/_design/{ddoc}/_info: Get design document information
+        - GET /{db}/_design/{ddoc}/_view/{view}: Query a view
+        - POST /{db}/_design/{ddoc}/_view/{view}: Query a view via POST
+        - GET /{db}/_design/{ddoc}/_search/{index}: Query search index
+        - POST /{db}/_design/{ddoc}/_search/{index}: Query search index with POST
+        - GET /{db}/_design/{ddoc}/_search_info/{index}: Get search index information
+        - GET /{db}/_design/{ddoc}/_nouveau/{index}: Query nouveau index
+        - POST /{db}/_design/{ddoc}/_nouveau/{index}: Query nouveau index with POST
+        - GET /{db}/_design/{ddoc}/_nouveau_info/{index}: Get nouveau index information
+        - GET /{db}/_design/{ddoc}/_show/{func}: Execute show function
+        - GET /{db}/_design/{ddoc}/_show/{func}/{docid}: Execute show function for document
+        - GET /{db}/_design/{ddoc}/_list/{func}/{view}: Execute list function
+        - GET /{db}/_design/{ddoc}/_list/{func}/{other-ddoc}/{view}: Execute list function from another design document
+        - POST /{db}/_design/{ddoc}/_update/{func}: Execute update function
+        - PUT /{db}/_design/{ddoc}/_update/{func}/{docid}: Execute update function for document
+        - GET /{db}/_design/{ddoc}/_rewrite/{path}: Rewrite URL
+
+        Partitioned Database endpoints:
+        - GET /{db}/_partition/{partition_id}: Get partition information
+        - GET /{db}/_partition/{partition_id}/_all_docs: Get all documents in partition
+        - GET /{db}/_partition/{partition_id}/_design/{ddoc}/_view/{view}: Query a view in partition
+        - POST /{db}/_partition/{partition_id}/_find: Query documents in partition using Mango
+        - POST /{db}/_partition/{partition_id}/_explain: Explain query in partition
+
+        Local Documents endpoints:
+        - GET /{db}/_local_docs: Get all local documents
+        - POST /{db}/_local_docs/queries: Query local documents
+        - GET /{db}/_local/{docid}: Get local document
+        - PUT /{db}/_local/{docid}: Create or update local document
+        - DELETE /{db}/_local/{docid}: Delete local document
+
+        User endpoints:
+        - GET /_users: Information about the system users database
+        - GET /_users/{user_id}: Get user document
+        - PUT /_users/{user_id}: Create or update user
 
         Returns:
             dict: Dictionary with path definitions in OpenAPI 3.0 format, where:
@@ -328,6 +411,535 @@ class CouchDBSwaggerGenerator:
                         }
                     },
                 }
+            },
+            "/_active_tasks": {
+                "get": {
+                    "summary": "List active tasks",
+                    "description": "Returns a list of active tasks, including the task type, name, status and progress",
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {"type": "object"},
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_dbs_info": {
+                "post": {
+                    "summary": "Get information about multiple databases",
+                    "description": "Returns information about a list of specified databases",
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "keys": {
+                                            "type": "array",
+                                            "items": {"type": "string"},
+                                        }
+                                    },
+                                }
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {"type": "object"},
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_cluster_setup": {
+                "get": {
+                    "summary": "Get cluster setup status",
+                    "description": "Returns the status of the node or cluster, per the cluster setup wizard",
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "post": {
+                    "summary": "Configure cluster",
+                    "description": "Configure a node as a single node, as part of a cluster, or finalize a cluster",
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+            },
+            "/_db_updates": {
+                "get": {
+                    "summary": "List database updates",
+                    "description": "Returns a list of all database events in the CouchDB instance",
+                    "parameters": [
+                        {
+                            "name": "feed",
+                            "in": "query",
+                            "required": False,
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "normal",
+                                    "longpoll",
+                                    "continuous",
+                                    "eventsource",
+                                ],
+                            },
+                            "description": "Type of feed",
+                        },
+                        {
+                            "name": "timeout",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "integer"},
+                            "description": "Number of seconds to wait for a change before the response closes",
+                        },
+                        {
+                            "name": "heartbeat",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "integer"},
+                            "description": "Period in milliseconds after which an empty line is sent in the results",
+                        },
+                        {
+                            "name": "since",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "string"},
+                            "description": "Start from this update sequence",
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_membership": {
+                "get": {
+                    "summary": "Get cluster membership",
+                    "description": "Displays the nodes that are part of the cluster as cluster_nodes",
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_scheduler/jobs": {
+                "get": {
+                    "summary": "List replication jobs",
+                    "description": "Returns information about replication jobs",
+                    "parameters": [
+                        {
+                            "name": "limit",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "integer"},
+                            "description": "Maximum number of results",
+                        },
+                        {
+                            "name": "skip",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "integer"},
+                            "description": "Skip this number of results before returning",
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_scheduler/docs": {
+                "get": {
+                    "summary": "List replication document jobs",
+                    "description": "Returns information about replication document jobs",
+                    "parameters": [
+                        {
+                            "name": "limit",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "integer"},
+                            "description": "Maximum number of results",
+                        },
+                        {
+                            "name": "skip",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "integer"},
+                            "description": "Skip this number of results before returning",
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_node/{node-name}": {
+                "get": {
+                    "summary": "Get node information",
+                    "description": "Returns information about the specified node",
+                    "parameters": [
+                        {
+                            "name": "node-name",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_node/{node-name}/_stats": {
+                "get": {
+                    "summary": "Get node statistics",
+                    "description": "Returns statistics for the running server",
+                    "parameters": [
+                        {
+                            "name": "node-name",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_node/{node-name}/_prometheus": {
+                "get": {
+                    "summary": "Get Prometheus metrics",
+                    "description": "Returns metrics in Prometheus format",
+                    "parameters": [
+                        {
+                            "name": "node-name",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "text/plain": {
+                                    "schema": {"type": "string"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_node/{node-name}/_smoosh/status": {
+                "get": {
+                    "summary": "Get smoosh status",
+                    "description": "Returns status of the smoosh compaction daemon",
+                    "parameters": [
+                        {
+                            "name": "node-name",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_node/{node-name}/_system": {
+                "get": {
+                    "summary": "Get system information",
+                    "description": "Returns system information for the node",
+                    "parameters": [
+                        {
+                            "name": "node-name",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_node/{node-name}/_restart": {
+                "post": {
+                    "summary": "Restart node",
+                    "description": "Restarts the node",
+                    "parameters": [
+                        {
+                            "name": "node-name",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_node/{node-name}/_versions": {
+                "get": {
+                    "summary": "Get node versions",
+                    "description": "Returns version information for the node",
+                    "parameters": [
+                        {
+                            "name": "node-name",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_search_analyze": {
+                "post": {
+                    "summary": "Analyze search text",
+                    "description": "Tests analysis of search text",
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_nouveau_analyze": {
+                "post": {
+                    "summary": "Analyze nouveau text",
+                    "description": "Tests analysis of nouveau text",
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_up": {
+                "get": {
+                    "summary": "Check server status",
+                    "description": "Confirms that the server is up, running, and ready to accept requests",
+                    "responses": {
+                        "200": {
+                            "description": "Server is up and running",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_uuids": {
+                "get": {
+                    "summary": "Generate UUIDs",
+                    "description": "Requests one or more Universally Unique Identifiers (UUIDs) from the CouchDB instance",
+                    "parameters": [
+                        {
+                            "name": "count",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "integer"},
+                            "description": "Number of UUIDs to generate",
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "uuids": {
+                                                "type": "array",
+                                                "items": {"type": "string"},
+                                            }
+                                        },
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/_reshard": {
+                "get": {
+                    "summary": "Get resharding status",
+                    "description": "Returns status of resharding jobs",
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "post": {
+                    "summary": "Start resharding",
+                    "description": "Starts resharding jobs",
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
             },
             "/{db}": {
                 "put": {
@@ -411,6 +1023,699 @@ class CouchDBSwaggerGenerator:
                         }
                     },
                 }
+            },
+            "/{db}/_design_docs": {
+                "get": {
+                    "summary": "Get all design documents",
+                    "description": "Returns all design documents in the database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/AllDocsResponse"
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_bulk_get": {
+                "post": {
+                    "summary": "Bulk get documents",
+                    "description": "Returns multiple documents in a single request",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_index": {
+                "get": {
+                    "summary": "List indexes",
+                    "description": "Returns a list of all indexes in the database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "post": {
+                    "summary": "Create index",
+                    "description": "Creates a new index",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "delete": {
+                    "summary": "Delete index",
+                    "description": "Deletes an index",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "query",
+                            "required": True,
+                            "schema": {"type": "string"},
+                            "description": "Design document name",
+                        },
+                        {
+                            "name": "name",
+                            "in": "query",
+                            "required": True,
+                            "schema": {"type": "string"},
+                            "description": "Index name",
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+            },
+            "/{db}/_explain": {
+                "post": {
+                    "summary": "Explain query",
+                    "description": "Shows which index is being used by the query",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"$ref": "#/components/schemas/MangoQuery"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_shards": {
+                "get": {
+                    "summary": "Get database shards",
+                    "description": "Returns information about the shards in a database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_shards/{docid}": {
+                "get": {
+                    "summary": "Get document shards",
+                    "description": "Returns information about the shards where a document is stored",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "docid",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_sync_shards": {
+                "post": {
+                    "summary": "Sync database shards",
+                    "description": "Synchronizes database shards",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_compact": {
+                "post": {
+                    "summary": "Compact database",
+                    "description": "Starts compaction of the specified database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "202": {
+                            "description": "Compaction request has been accepted",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_compact/{ddoc}": {
+                "post": {
+                    "summary": "Compact design document",
+                    "description": "Starts compaction of the view indexes associated with the specified design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "202": {
+                            "description": "Compaction request has been accepted",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_ensure_full_commit": {
+                "post": {
+                    "summary": "Ensure full commit",
+                    "description": "Ensures that all changes to the database are committed to disk",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "201": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_view_cleanup": {
+                "post": {
+                    "summary": "Cleanup view indexes",
+                    "description": "Removes view index files that are no longer required",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "202": {
+                            "description": "Cleanup request has been accepted",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_search_cleanup": {
+                "post": {
+                    "summary": "Cleanup search indexes",
+                    "description": "Removes search index files that are no longer required",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "202": {
+                            "description": "Cleanup request has been accepted",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_nouveau_cleanup": {
+                "post": {
+                    "summary": "Cleanup nouveau indexes",
+                    "description": "Removes nouveau index files that are no longer required",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "202": {
+                            "description": "Cleanup request has been accepted",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_security": {
+                "get": {
+                    "summary": "Get database security",
+                    "description": "Returns the current security object from the specified database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "put": {
+                    "summary": "Set database security",
+                    "description": "Sets the security object for the given database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+            },
+            "/{db}/_purge": {
+                "post": {
+                    "summary": "Purge documents",
+                    "description": "Purges documents from the database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_purged_infos": {
+                "get": {
+                    "summary": "Get purged information",
+                    "description": "Returns information about purged documents",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_purged_infos_limit": {
+                "get": {
+                    "summary": "Get purged information limit",
+                    "description": "Returns the limit of purged information",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "put": {
+                    "summary": "Set purged information limit",
+                    "description": "Sets the limit of purged information",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+            },
+            "/{db}/_missing_revs": {
+                "post": {
+                    "summary": "Get missing revisions",
+                    "description": "Returns the document revisions that do not exist in the database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_revs_diff": {
+                "post": {
+                    "summary": "Get revision differences",
+                    "description": (
+                        "Given a set of document/revision IDs, returns the subset "
+                        "of those that do not correspond to revisions stored in the database"
+                    ),
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_revs_limit": {
+                "get": {
+                    "summary": "Get revision limit",
+                    "description": "Returns the limit of document revisions",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "put": {
+                    "summary": "Set revision limit",
+                    "description": "Sets the limit of document revisions",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
             },
             "/_users": {
                 "get": {
@@ -983,6 +2288,569 @@ class CouchDBSwaggerGenerator:
                     },
                 },
             },
+            "/{db}/_design/{ddoc}/_info": {
+                "get": {
+                    "summary": "Get design document information",
+                    "description": "Returns information about a design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_search/{index}": {
+                "get": {
+                    "summary": "Query search index",
+                    "description": "Queries a search index from a design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "index",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "q",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "string"},
+                            "description": "Query string",
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "post": {
+                    "summary": "Query search index with POST",
+                    "description": "Queries a search index from a design document using POST method",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "index",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "requestBody": {
+                        "required": False,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+            },
+            "/{db}/_design/{ddoc}/_search_info/{index}": {
+                "get": {
+                    "summary": "Get search index information",
+                    "description": "Returns information about a search index",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "index",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_nouveau/{index}": {
+                "get": {
+                    "summary": "Query nouveau index",
+                    "description": "Queries a nouveau index from a design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "index",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+                "post": {
+                    "summary": "Query nouveau index with POST",
+                    "description": "Queries a nouveau index from a design document using POST method",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "index",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "requestBody": {
+                        "required": False,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                },
+            },
+            "/{db}/_design/{ddoc}/_nouveau_info/{index}": {
+                "get": {
+                    "summary": "Get nouveau index information",
+                    "description": "Returns information about a nouveau index",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "index",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_show/{func}": {
+                "get": {
+                    "summary": "Execute show function",
+                    "description": "Executes a show function from a design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "func",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "text/html": {
+                                    "schema": {"type": "string"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_show/{func}/{docid}": {
+                "get": {
+                    "summary": "Execute show function for document",
+                    "description": "Executes a show function from a design document for a specific document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "func",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "docid",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "text/html": {
+                                    "schema": {"type": "string"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_list/{func}/{view}": {
+                "get": {
+                    "summary": "Execute list function",
+                    "description": "Executes a list function from a design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "func",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "view",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "text/html": {
+                                    "schema": {"type": "string"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_list/{func}/{other-ddoc}/{view}": {
+                "get": {
+                    "summary": "Execute list function from another design document",
+                    "description": "Executes a list function from a design document using a view from another design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "func",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "other-ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "view",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "text/html": {
+                                    "schema": {"type": "string"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_update/{func}": {
+                "post": {
+                    "summary": "Execute update function",
+                    "description": "Executes an update function from a design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "func",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "requestBody": {
+                        "required": False,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_update/{func}/{docid}": {
+                "put": {
+                    "summary": "Execute update function for document",
+                    "description": "Executes an update function from a design document for a specific document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "func",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "docid",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "requestBody": {
+                        "required": False,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_design/{ddoc}/_rewrite/{path}": {
+                "get": {
+                    "summary": "Rewrite URL",
+                    "description": "Rewrites a URL using rewrite rules from a design document",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "path",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
             "/{db}/{docid}/{attachment}": {
                 "get": {
                     "summary": "Get attachment",
@@ -1118,6 +2986,349 @@ class CouchDBSwaggerGenerator:
                                 }
                             },
                         }
+                    },
+                },
+            },
+            "/{db}/_partition/{partition_id}": {
+                "get": {
+                    "summary": "Get partition information",
+                    "description": "Returns information about a partition",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "partition_id",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_partition/{partition_id}/_all_docs": {
+                "get": {
+                    "summary": "Get all documents in partition",
+                    "description": "Returns all documents in the partition",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "partition_id",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/AllDocsResponse"
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_partition/{partition_id}/_design/{ddoc}/_view/{view}": {
+                "get": {
+                    "summary": "Query a view in partition",
+                    "description": "Queries a view from a design document in a partition",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "partition_id",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "ddoc",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "view",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/ViewResponse"
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_partition/{partition_id}/_find": {
+                "post": {
+                    "summary": "Query documents in partition using Mango",
+                    "description": "Query documents in a partition using the Mango query syntax",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "partition_id",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"$ref": "#/components/schemas/MangoQuery"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/MangoResponse"
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_partition/{partition_id}/_explain": {
+                "post": {
+                    "summary": "Explain query in partition",
+                    "description": "Shows which index is being used by the query in a partition",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "partition_id",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"$ref": "#/components/schemas/MangoQuery"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_local_docs": {
+                "get": {
+                    "summary": "Get all local documents",
+                    "description": "Returns all local documents in the database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/AllDocsResponse"
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_local_docs/queries": {
+                "post": {
+                    "summary": "Query local documents",
+                    "description": "Queries local documents using multiple queries",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"type": "object"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"type": "object"},
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+            "/{db}/_local/{docid}": {
+                "get": {
+                    "summary": "Get local document",
+                    "description": "Gets a local document from the specified database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "docid",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Request completed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/Document"},
+                                }
+                            },
+                        },
+                        "404": {"description": "Document not found"},
+                    },
+                },
+                "put": {
+                    "summary": "Create/update local document",
+                    "description": "Creates or updates a local document in the specified database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "docid",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"$ref": "#/components/schemas/Document"},
+                            }
+                        },
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Document created/updated successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/DocumentResponse"
+                                    }
+                                }
+                            },
+                        },
+                        "400": {"description": "Invalid request"},
+                    },
+                },
+                "delete": {
+                    "summary": "Delete local document",
+                    "description": "Deletes a local document from the specified database",
+                    "parameters": [
+                        {
+                            "name": "db",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                        {
+                            "name": "docid",
+                            "in": "path",
+                            "required": True,
+                            "schema": {"type": "string"},
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Document deleted successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/DocumentResponse"
+                                    }
+                                }
+                            },
+                        },
+                        "404": {"description": "Document not found"},
                     },
                 },
             },
