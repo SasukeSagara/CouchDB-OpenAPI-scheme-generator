@@ -19,12 +19,13 @@ jobs:
         run: uv build
       - name: Check package
         run: |
-          uv pip install twine
-          uv run twine check dist/*
+          uv tool install twine
+          twine check dist/*
       - name: Publish to Test PyPI (dev branch)
         if: github.ref == 'refs/heads/dev'
         run: |
-          uv run twine upload --repository testpypi dist/*
+          uv tool install twine
+          twine upload --repository testpypi dist/*
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
