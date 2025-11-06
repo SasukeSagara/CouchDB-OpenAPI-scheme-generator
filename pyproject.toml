@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "couchdb-openapi-scheme-generator"
-version = "1.0.0"
+version = "1.0.2"
 description = "CouchDB OpenAPI scheme generator"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "CouchDB OpenAPI scheme generator Contributors"}
+    {name = "CouchDB OpenAPI scheme generator contributors"}
 ]
 keywords = ["couchdb", "openapi", "swagger", "api", "generator", "specification"]
 classifiers = [
