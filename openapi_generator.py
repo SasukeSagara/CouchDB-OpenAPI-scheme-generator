@@ -2,13 +2,13 @@
 """
 CouchDB Swagger/OpenAPI Generator
 
-Python версия CLI инструмента digitalnodecom/couchdb-swagger для генерации
-OpenAPI/Swagger спецификации на основе CouchDB REST API.
+Python version of the CLI tool digitalnodecom/couchdb-swagger for generating
+OpenAPI/Swagger specifications based on CouchDB REST API.
 
-Модуль предоставляет класс CouchDBSwaggerGenerator для программной генерации
-OpenAPI спецификаций и функцию main() для использования из командной строки.
+The module provides the CouchDBSwaggerGenerator class for programmatic generation
+of OpenAPI specifications and the main() function for command-line usage.
 
-Пример использования:
+Usage example:
     >>> generator = CouchDBSwaggerGenerator(
     ...     base_url="http://localhost:5984",
     ...     username="admin",
@@ -17,7 +17,7 @@ OpenAPI спецификаций и функцию main() для использ�
     >>> spec = generator.generate_openapi_spec()
     >>> generator.save_spec("couchdb-api.json", spec)
 
-Пример использования из командной строки:
+Command-line usage example:
     $ python openapi_generator.py --url http://localhost:5984 --output api.json
     $ python openapi_generator.py --url http://localhost:5984 -u admin -p password -f yaml
 """
@@ -31,72 +31,70 @@ import requests
 
 class CouchDBSwaggerGenerator:
     """
-    Генератор OpenAPI/Swagger спецификации для CouchDB API.
+    OpenAPI/Swagger specification generator for CouchDB API.
 
-    Этот класс предоставляет функциональность для подключения к CouchDB серверу
-    и генерации OpenAPI спецификации на основе доступных эндпоинтов и схем данных.
-    Поддерживает базовую HTTP аутентификацию и автоматически определяет версию
-    CouchDB сервера для включения в спецификацию.
+    This class provides functionality to connect to a CouchDB server
+    and generate OpenAPI specifications based on available endpoints and data schemas.
+    Supports basic HTTP authentication and automatically detects the CouchDB server
+    version for inclusion in the specification.
 
     Attributes:
-        base_url (str): Базовый URL CouchDB сервера без завершающего слеша.
-            Используется для всех HTTP запросов к серверу.
-        auth (tuple[str, str] | None): Кортеж (username, password) для базовой
-            HTTP аутентификации. Устанавливается в None, если учетные данные
-            не предоставлены.
+        base_url (str): Base URL of the CouchDB server without trailing slash.
+            Used for all HTTP requests to the server.
+        auth (tuple[str, str] | None): Tuple (username, password) for basic
+            HTTP authentication. Set to None if credentials are not provided.
 
     Example:
-        >>> # Создание генератора без аутентификации
+        >>> # Create generator without authentication
         >>> generator = CouchDBSwaggerGenerator()
         >>>
-        >>> # Создание генератора с аутентификацией
+        >>> # Create generator with authentication
         >>> generator = CouchDBSwaggerGenerator(
         ...     base_url="http://couchdb.example.com:5984",
         ...     username="admin",
         ...     password="secret"
         ... )
         >>>
-        >>> # Генерация и сохранение спецификации
+        >>> # Generate and save specification
         >>> spec = generator.generate_openapi_spec(version="3.0.0")
         >>> generator.save_spec("couchdb-openapi.json", spec)
 
     Note:
-        При инициализации URL автоматически очищается от завершающего слеша
-        для обеспечения консистентности при формировании путей запросов.
+        During initialization, the URL is automatically cleaned of trailing slash
+        to ensure consistency when forming request paths.
     """
 
     def __init__(self, base_url="http://localhost:5984", username=None, password=None):
         """
-        Инициализирует генератор OpenAPI спецификации для CouchDB.
+        Initialize the OpenAPI specification generator for CouchDB.
 
-        Создает новый экземпляр генератора с указанными параметрами подключения.
-        Если предоставлены username и password, настраивается базовая HTTP
-        аутентификация для всех последующих запросов.
+        Creates a new generator instance with the specified connection parameters.
+        If username and password are provided, basic HTTP authentication is configured
+        for all subsequent requests.
 
         Args:
-            base_url (str, optional): Базовый URL CouchDB сервера.
-                Должен включать протокол (http:// или https://) и порт при необходимости.
-                По умолчанию: "http://localhost:5984".
-                Примеры: "http://localhost:5984", "https://couchdb.example.com:5984"
-            username (str | None, optional): Имя пользователя для базовой HTTP
-                аутентификации. Если указан, должен быть указан и password.
-                По умолчанию: None (без аутентификации).
-            password (str | None, optional): Пароль для базовой HTTP аутентификации.
-                Если указан, должен быть указан и username.
-                По умолчанию: None (без аутентификации).
+            base_url (str, optional): Base URL of the CouchDB server.
+                Must include protocol (http:// or https://) and port if necessary.
+                Default: "http://localhost:5984".
+                Examples: "http://localhost:5984", "https://couchdb.example.com:5984"
+            username (str | None, optional): Username for basic HTTP authentication.
+                If specified, password must also be specified.
+                Default: None (no authentication).
+            password (str | None, optional): Password for basic HTTP authentication.
+                If specified, username must also be specified.
+                Default: None (no authentication).
 
         Note:
-            - URL автоматически очищается от завершающего слеша
-            - Если указан только username или только password, аутентификация
-              не будет настроена (auth будет None)
-            - Для защищенных серверов обязательно указывайте оба параметра
-              аутентификации
+            - URL is automatically cleaned of trailing slash
+            - If only username or only password is specified, authentication
+              will not be configured (auth will be None)
+            - For secured servers, both authentication parameters must be specified
 
         Example:
-            >>> # Локальный сервер без аутентификации
+            >>> # Local server without authentication
             >>> gen1 = CouchDBSwaggerGenerator()
             >>>
-            >>> # Удаленный сервер с аутентификацией
+            >>> # Remote server with authentication
             >>> gen2 = CouchDBSwaggerGenerator(
             ...     base_url="https://couchdb.example.com:5984",
             ...     username="admin",
@@ -108,15 +106,15 @@ class CouchDBSwaggerGenerator:
 
     def get_server_info(self):
         """
-        Получает информацию о CouchDB сервере.
+        Get information about the CouchDB server.
 
-        Выполняет GET запрос к корневому эндпоинту CouchDB (/) для получения
-        информации о версии, функциях и других метаданных сервера. Эта информация
-        используется для генерации OpenAPI спецификации с корректной версией
-        CouchDB в метаданных API.
+        Performs a GET request to the root CouchDB endpoint (/) to retrieve
+        information about version, features, and other server metadata. This information
+        is used to generate the OpenAPI specification with the correct CouchDB
+        version in the API metadata.
 
         Returns:
-            dict: Словарь с информацией о сервере в формате JSON. Типичная структура:
+            dict: Dictionary with server information in JSON format. Typical structure:
                 {
                     "couchdb": "Welcome",
                     "version": "3.3.0",
@@ -130,16 +128,16 @@ class CouchDBSwaggerGenerator:
                 }
 
         Raises:
-            SystemExit: Выход из программы с кодом 1 при ошибке подключения,
-                отсутствии сервера, проблемах с сетью или неверных учетных данных.
-                Сообщение об ошибке выводится в stderr.
+            SystemExit: Exit the program with code 1 on connection error,
+                server unavailability, network issues, or invalid credentials.
+                Error message is printed to stderr.
 
         Note:
-            - Метод использует базовую HTTP аутентификацию, если она была настроена
-              при инициализации класса
-            - При ошибке подключения программа завершается немедленно
-            - Для успешного выполнения требуется доступность CouchDB сервера
-              по указанному base_url
+            - Method uses basic HTTP authentication if it was configured
+              during class initialization
+            - On connection error, the program exits immediately
+            - For successful execution, CouchDB server must be accessible
+              at the specified base_url
 
         Example:
             >>> generator = CouchDBSwaggerGenerator()
@@ -159,41 +157,41 @@ class CouchDBSwaggerGenerator:
 
     def generate_openapi_spec(self, version="3.0.0"):
         """
-        Генерирует полную OpenAPI спецификацию для CouchDB API.
+        Generate a complete OpenAPI specification for CouchDB API.
 
-        Создает полную OpenAPI спецификацию версии 3.0.0, включающую информацию
-        о сервере, все доступные пути (endpoints), схемы данных и настройки
-        безопасности. Версия CouchDB определяется автоматически путем запроса
-        к серверу и включается в метаданные спецификации.
+        Creates a complete OpenAPI specification version 3.0.0, including server
+        information, all available paths (endpoints), data schemas, and security
+        settings. The CouchDB version is automatically determined by querying
+        the server and included in the specification metadata.
 
         Args:
-            version (str, optional): Версия OpenAPI спецификации.
-                Поддерживаются версии OpenAPI 3.x. По умолчанию: "3.0.0".
-                Рекомендуется использовать "3.0.0" или "3.1.0" для совместимости
-                с большинством инструментов.
+            version (str, optional): OpenAPI specification version.
+                OpenAPI 3.x versions are supported. Default: "3.0.0".
+                It is recommended to use "3.0.0" or "3.1.0" for compatibility
+                with most tools.
 
         Returns:
-            dict: Полная OpenAPI спецификация в формате словаря, соответствующая
-                стандарту OpenAPI 3.0. Структура включает:
-                - openapi (str): Версия спецификации OpenAPI
-                - info (dict): Метаданные API:
+            dict: Complete OpenAPI specification in dictionary format, conforming
+                to OpenAPI 3.0 standard. Structure includes:
+                - openapi (str): OpenAPI specification version
+                - info (dict): API metadata:
                     - title: "CouchDB API"
-                    - description: Описание с версией CouchDB
-                    - version: Версия CouchDB сервера
-                    - contact: Контактная информация Apache CouchDB
-                - servers (list): Список серверов с базовым URL
-                - paths (dict): Все доступные эндпоинты с методами HTTP
-                - components (dict): Компоненты спецификации:
-                    - schemas: Схемы данных для объектов CouchDB
-                    - securitySchemes: Схемы безопасности (basicAuth)
-                - security (list): Настройки безопасности по умолчанию
+                    - description: Description with CouchDB version
+                    - version: CouchDB server version
+                    - contact: Apache CouchDB contact information
+                - servers (list): List of servers with base URL
+                - paths (dict): All available endpoints with HTTP methods
+                - components (dict): Specification components:
+                    - schemas: Data schemas for CouchDB objects
+                    - securitySchemes: Security schemes (basicAuth)
+                - security (list): Default security settings
 
         Note:
-            - Метод выполняет запрос к серверу через get_server_info() для
-              получения версии CouchDB
-            - При ошибке подключения к серверу программа завершается
-            - Спецификация совместима с инструментами типа Swagger UI,
-              Postman, Insomnia и другими OpenAPI-совместимыми клиентами
+            - Method performs a request to the server via get_server_info() to
+              get the CouchDB version
+            - On connection error, the program exits
+            - Specification is compatible with tools like Swagger UI,
+              Postman, Insomnia, and other OpenAPI-compatible clients
 
         Example:
             >>> generator = CouchDBSwaggerGenerator()
@@ -232,56 +230,56 @@ class CouchDBSwaggerGenerator:
 
     def generate_paths(self):
         """
-        Генерирует определения путей (paths) для основных эндпоинтов CouchDB.
+        Generate path definitions for main CouchDB endpoints.
 
-        Создает OpenAPI определения для основных REST API эндпоинтов CouchDB.
-        Каждый путь включает описание методов HTTP, параметров, запросов,
-        ответов и кодов состояния. Определения соответствуют стандарту OpenAPI 3.0.
+        Creates OpenAPI definitions for main CouchDB REST API endpoints.
+        Each path includes HTTP method descriptions, parameters, requests,
+        responses, and status codes. Definitions conform to OpenAPI 3.0 standard.
 
-        Поддерживаемые эндпоинты:
-        - GET /: Информация о сервере CouchDB
-        - GET /_all_dbs: Список всех баз данных в экземпляре
-        - PUT /{db}: Создание новой базы данных
-        - GET /{db}: Получение информации о базе данных
-        - DELETE /{db}: Удаление базы данных
-        - GET /{db}/_all_docs: Получение всех документов из базы данных
-        - GET /_users: Информация о системной базе данных пользователей
-        - GET /_users/{user_id}: Получение документа пользователя
-        - PUT /_users/{user_id}: Создание или обновление пользователя
-        - GET /{db}/{docid}: Получение документа
-        - PUT /{db}/{docid}: Создание или обновление документа
-        - DELETE /{db}/{docid}: Удаление документа
-        - HEAD /{db}/{docid}: Проверка существования документа
-        - POST /{db}/_find: Поиск документов с использованием Mango Query
-        - GET /{db}/_changes: Получение потока изменений базы данных
-        - POST /{db}/_bulk_docs: Массовые операции с документами
-        - GET /{db}/_design/{ddoc}: Получение design документа
-        - PUT /{db}/_design/{ddoc}: Создание или обновление design документа
-        - DELETE /{db}/_design/{ddoc}: Удаление design документа
-        - GET /{db}/_design/{ddoc}/_view/{view}: Запрос представления (view)
-        - POST /{db}/_design/{ddoc}/_view/{view}: Запрос представления через POST
-        - GET /{db}/{docid}/{attachment}: Получение вложения
-        - PUT /{db}/{docid}/{attachment}: Добавление или обновление вложения
-        - DELETE /{db}/{docid}/{attachment}: Удаление вложения
-        - POST /_replicate: Репликация базы данных
+        Supported endpoints:
+        - GET /: CouchDB server information
+        - GET /_all_dbs: List all databases in the instance
+        - PUT /{db}: Create a new database
+        - GET /{db}: Get database information
+        - DELETE /{db}: Delete database
+        - GET /{db}/_all_docs: Get all documents from the database
+        - GET /_users: Information about the system users database
+        - GET /_users/{user_id}: Get user document
+        - PUT /_users/{user_id}: Create or update user
+        - GET /{db}/{docid}: Get document
+        - PUT /{db}/{docid}: Create or update document
+        - DELETE /{db}/{docid}: Delete document
+        - HEAD /{db}/{docid}: Check document existence
+        - POST /{db}/_find: Query documents using Mango Query
+        - GET /{db}/_changes: Get database changes stream
+        - POST /{db}/_bulk_docs: Bulk document operations
+        - GET /{db}/_design/{ddoc}: Get design document
+        - PUT /{db}/_design/{ddoc}: Create or update design document
+        - DELETE /{db}/_design/{ddoc}: Delete design document
+        - GET /{db}/_design/{ddoc}/_view/{view}: Query a view
+        - POST /{db}/_design/{ddoc}/_view/{view}: Query a view via POST
+        - GET /{db}/{docid}/{attachment}: Get attachment
+        - PUT /{db}/{docid}/{attachment}: Add or update attachment
+        - DELETE /{db}/{docid}/{attachment}: Delete attachment
+        - POST /_replicate: Replicate database
 
         Returns:
-            dict: Словарь с определениями путей в формате OpenAPI 3.0, где:
-                - Ключ (str): Путь эндпоинта (например, "/", "/_all_dbs", "/{db}")
-                - Значение (dict): Объект с методами HTTP (get, put, delete) и их
-                  описаниями, включающими:
-                    - summary: Краткое описание операции
-                    - description: Подробное описание операции
-                    - parameters: Список параметров пути/запроса
-                    - requestBody: Тело запроса (для PUT методов)
-                    - responses: Коды ответов и их описания
-                    - content: Схемы данных для ответов
+            dict: Dictionary with path definitions in OpenAPI 3.0 format, where:
+                - Key (str): Endpoint path (e.g., "/", "/_all_dbs", "/{db}")
+                - Value (dict): Object with HTTP methods (get, put, delete) and their
+                  descriptions, including:
+                    - summary: Brief operation description
+                    - description: Detailed operation description
+                    - parameters: List of path/query parameters
+                    - requestBody: Request body (for PUT methods)
+                    - responses: Response codes and their descriptions
+                    - content: Data schemas for responses
 
         Note:
-            - Пути с параметрами используют синтаксис OpenAPI: {param_name}
-            - Все определения включают стандартные коды ответов HTTP
-            - Схемы ответов ссылаются на компоненты в generate_schemas()
-            - Метод не выполняет запросы к серверу, только формирует структуру
+            - Paths with parameters use OpenAPI syntax: {param_name}
+            - All definitions include standard HTTP response codes
+            - Response schemas reference components in generate_schemas()
+            - Method does not perform server requests, only forms the structure
 
         Example:
             >>> generator = CouchDBSwaggerGenerator()
@@ -1157,56 +1155,56 @@ class CouchDBSwaggerGenerator:
 
     def generate_schemas(self):
         """
-        Генерирует схемы данных (schemas) для объектов CouchDB.
+        Generate data schemas for CouchDB objects.
 
-        Создает OpenAPI JSON Schema определения для основных типов данных,
-        используемых в CouchDB API. Схемы определяют структуру, типы полей,
-        обязательные поля и ограничения для объектов, возвращаемых API.
+        Creates OpenAPI JSON Schema definitions for main data types
+        used in CouchDB API. Schemas define structure, field types,
+        required fields, and constraints for objects returned by the API.
 
-        Генерируемые схемы:
-        - ServerInfo: Информация о сервере CouchDB, включая версию, UUID,
-          функции и информацию о поставщике
-        - DatabaseInfo: Метаданные базы данных: имя, количество документов,
-          размеры, последовательности обновлений
-        - AllDocsResponse: Ответ на запрос _all_docs с массивом документов,
-          общим количеством строк и смещением
-        - UserDocument: Документ пользователя в системной базе _users с
-          обязательными полями name, password, type, roles
-        - Document: Базовый документ CouchDB с полями _id, _rev, _deleted,
-          _attachments и поддержкой дополнительных свойств
-        - DocumentResponse: Ответ на операции создания/обновления/удаления
-          документа с полями ok, id, rev
-        - MangoQuery: Запрос Mango Query с селектором, лимитом, сортировкой
-          и другими параметрами
-        - MangoResponse: Ответ на Mango Query с массивом документов и закладкой
-        - ChangesResponse: Ответ на запрос изменений с массивом результатов
-          и последней последовательностью
-        - BulkDocsRequest: Запрос массовых операций с массивом документов
-        - DesignDocument: Design документ с представлениями, фильтрами,
-          списками и другими функциями
-        - ViewQuery: Параметры запроса представления (view) с ключами,
-          лимитами и другими опциями
-        - ViewResponse: Ответ на запрос представления с массивом строк
-          и метаданными
-        - ReplicationRequest: Запрос репликации с источником, целью и параметрами
-        - ReplicationResponse: Ответ на запрос репликации с историей сессий
+        Generated schemas:
+        - ServerInfo: CouchDB server information, including version, UUID,
+          features, and vendor information
+        - DatabaseInfo: Database metadata: name, document count,
+          sizes, update sequences
+        - AllDocsResponse: Response to _all_docs request with array of documents,
+          total row count, and offset
+        - UserDocument: User document in system _users database with
+          required fields name, password, type, roles
+        - Document: Base CouchDB document with fields _id, _rev, _deleted,
+          _attachments, and support for additional properties
+        - DocumentResponse: Response to document create/update/delete operations
+          with fields ok, id, rev
+        - MangoQuery: Mango Query request with selector, limit, sort
+          and other parameters
+        - MangoResponse: Response to Mango Query with array of documents and bookmark
+        - ChangesResponse: Response to changes request with array of results
+          and last sequence
+        - BulkDocsRequest: Bulk operations request with array of documents
+        - DesignDocument: Design document with views, filters,
+          lists, and other functions
+        - ViewQuery: View query parameters with keys,
+          limits, and other options
+        - ViewResponse: Response to view query with array of rows
+          and metadata
+        - ReplicationRequest: Replication request with source, target, and parameters
+        - ReplicationResponse: Response to replication request with session history
 
         Returns:
-            dict: Словарь схем данных в формате OpenAPI JSON Schema, где:
-                - Ключ (str): Название схемы (например, "ServerInfo", "DatabaseInfo")
-                - Значение (dict): Определение схемы JSON Schema, включающее:
-                    - type: Тип объекта ("object", "array", "string", etc.)
-                    - properties: Словарь свойств объекта с их типами
-                    - required: Список обязательных полей (для UserDocument)
-                    - items: Определение элементов массива (для массивов)
+            dict: Dictionary of data schemas in OpenAPI JSON Schema format, where:
+                - Key (str): Schema name (e.g., "ServerInfo", "DatabaseInfo")
+                - Value (dict): JSON Schema definition, including:
+                    - type: Object type ("object", "array", "string", etc.)
+                    - properties: Dictionary of object properties with their types
+                    - required: List of required fields (for UserDocument)
+                    - items: Array element definition (for arrays)
 
         Note:
-            - Схемы соответствуют стандарту JSON Schema Draft 7
-            - Схемы используются в paths через $ref ссылки
-            - Все свойства имеют описания типов, но не все имеют ограничения
+            - Schemas conform to JSON Schema Draft 7 standard
+            - Schemas are used in paths via $ref references
+            - All properties have type descriptions, but not all have constraints
             - UserDocument, MangoQuery, BulkDocsRequest, DesignDocument,
-              ReplicationRequest - схемы с обязательными полями
-            - Document поддерживает дополнительные свойства (additionalProperties: True)
+              ReplicationRequest - schemas with required fields
+            - Document supports additional properties (additionalProperties: True)
 
         Example:
             >>> generator = CouchDBSwaggerGenerator()
@@ -1523,34 +1521,34 @@ class CouchDBSwaggerGenerator:
 
     def save_spec(self, filename, spec):
         """
-        Сохраняет OpenAPI спецификацию в файл в формате JSON.
+        Save OpenAPI specification to a file in JSON format.
 
-        Записывает OpenAPI спецификацию в файл с форматированием (отступы 2 пробела)
-        и поддержкой Unicode символов. Файл создается в режиме записи с UTF-8
-        кодировкой. При успешном сохранении выводится сообщение в stdout.
+        Writes OpenAPI specification to a file with formatting (2-space indentation)
+        and Unicode character support. File is created in write mode with UTF-8
+        encoding. On successful save, a message is printed to stdout.
 
         Args:
-            filename (str): Путь к файлу для сохранения спецификации.
-                Может быть относительным или абсолютным путем.
-                Рекомендуется использовать расширение .json.
-                Примеры: "couchdb-api.json", "/path/to/api.json"
-            spec (dict): OpenAPI спецификация в формате словаря Python.
-                Должна соответствовать структуре, возвращаемой generate_openapi_spec().
+            filename (str): Path to file for saving the specification.
+                Can be relative or absolute path.
+                It is recommended to use .json extension.
+                Examples: "couchdb-api.json", "/path/to/api.json"
+            spec (dict): OpenAPI specification in Python dictionary format.
+                Must match the structure returned by generate_openapi_spec().
 
         Raises:
-            SystemExit: Выход из программы с кодом 1 при ошибке записи файла.
-                Возможные причины:
-                - Недостаточно прав для записи в указанную директорию
-                - Диск переполнен
-                - Некорректный путь к файлу
-                - Файл открыт в другой программе
-                Сообщение об ошибке выводится в stderr.
+            SystemExit: Exit the program with code 1 on file write error.
+                Possible causes:
+                - Insufficient permissions to write to the specified directory
+                - Disk full
+                - Invalid file path
+                - File is open in another program
+                Error message is printed to stderr.
 
         Note:
-            - Файл перезаписывается, если уже существует
-            - JSON форматируется с отступами для читаемости
-            - Unicode символы сохраняются как есть (ensure_ascii=False)
-            - При успешном сохранении выводится сообщение в stdout
+            - File is overwritten if it already exists
+            - JSON is formatted with indentation for readability
+            - Unicode characters are saved as-is (ensure_ascii=False)
+            - On successful save, a message is printed to stdout
 
         Example:
             >>> generator = CouchDBSwaggerGenerator()
@@ -1558,7 +1556,7 @@ class CouchDBSwaggerGenerator:
             >>> generator.save_spec("couchdb-api.json", spec)
             OpenAPI spec saved to: couchdb-api.json
             >>>
-            >>> # Сохранение в другую директорию
+            >>> # Save to a different directory
             >>> generator.save_spec("/tmp/couchdb-openapi.json", spec)
             OpenAPI spec saved to: /tmp/couchdb-openapi.json
         """
@@ -1573,65 +1571,65 @@ class CouchDBSwaggerGenerator:
 
 def main():
     """
-    Главная функция для запуска генератора OpenAPI спецификации из командной строки.
+    Main function for running the OpenAPI specification generator from command line.
 
-    Парсит аргументы командной строки, создает экземпляр генератора,
-    подключается к CouchDB серверу, генерирует OpenAPI спецификацию и сохраняет
-    её в файл в указанном формате (JSON или YAML). При выборе формата YAML
-    требуется установленная библиотека PyYAML, иначе выполняется откат к JSON.
+    Parses command-line arguments, creates a generator instance,
+    connects to CouchDB server, generates OpenAPI specification, and saves
+    it to a file in the specified format (JSON or YAML). When YAML format is selected,
+    PyYAML library must be installed, otherwise falls back to JSON.
 
-    Поддерживаемые аргументы командной строки:
-        --url (str): URL CouchDB сервера.
-            По умолчанию: "http://localhost:5984"
-            Примеры: "http://localhost:5984", "https://couchdb.example.com:5984"
+    Supported command-line arguments:
+        --url (str): CouchDB server URL.
+            Default: "http://localhost:5984"
+            Examples: "http://localhost:5984", "https://couchdb.example.com:5984"
 
-        --username, -u (str): Имя пользователя для базовой HTTP аутентификации.
-            Опционально. Если указан, должен быть указан и --password.
+        --username, -u (str): Username for basic HTTP authentication.
+            Optional. If specified, --password must also be specified.
 
-        --password, -p (str): Пароль для базовой HTTP аутентификации.
-            Опционально. Если указан, должен быть указан и --username.
+        --password, -p (str): Password for basic HTTP authentication.
+            Optional. If specified, --username must also be specified.
 
-        --output, -o (str): Имя выходного файла для сохранения спецификации.
-            По умолчанию: "couchdb-openapi.json"
-            При выборе формата YAML расширение .json автоматически заменяется на .yaml
+        --output, -o (str): Output filename for saving the specification.
+            Default: "couchdb-openapi.json"
+            When YAML format is selected, .json extension is automatically replaced with .yaml
 
-        --format, -f (str): Формат выходного файла.
-            Доступные значения: "json", "yaml"
-            По умолчанию: "json"
-            Для YAML требуется установленная библиотека PyYAML
+        --format, -f (str): Output file format.
+            Available values: "json", "yaml"
+            Default: "json"
+            PyYAML library is required for YAML format
 
     Returns:
-        None: Функция не возвращает значение. Результат работы - сохраненный файл
-            со спецификацией. Сообщения о прогрессе и ошибках выводятся в stdout/stderr.
+        None: Function does not return a value. Result of work is a saved file
+            with the specification. Progress and error messages are printed to stdout/stderr.
 
     Raises:
-        SystemExit: Выход из программы при:
-            - Ошибке подключения к CouchDB серверу
-            - Ошибке записи файла
-            - Некорректных аргументах командной строки
+        SystemExit: Exit the program on:
+            - CouchDB server connection error
+            - File write error
+            - Invalid command-line arguments
 
     Note:
-        - При ошибке подключения к серверу программа завершается с кодом 1
-        - Если PyYAML не установлен и выбран формат YAML, выполняется откат к JSON
-        - Сообщения о прогрессе выводятся в stdout
-        - Сообщения об ошибках выводятся в stderr
+        - On server connection error, program exits with code 1
+        - If PyYAML is not installed and YAML format is selected, falls back to JSON
+        - Progress messages are printed to stdout
+        - Error messages are printed to stderr
 
     Example:
-        Использование из командной строки:
+        Command-line usage:
 
-        # Базовое использование с локальным сервером
+        # Basic usage with local server
         $ python openapi_generator.py
 
-        # Указание URL сервера
+        # Specify server URL
         $ python openapi_generator.py --url http://couchdb.example.com:5984
 
-        # С аутентификацией
+        # With authentication
         $ python openapi_generator.py -u admin -p password
 
-        # Сохранение в YAML формате
+        # Save in YAML format
         $ python openapi_generator.py --format yaml -o couchdb-api.yaml
 
-        # Полный пример с всеми параметрами
+        # Full example with all parameters
         $ python openapi_generator.py \\
             --url https://couchdb.example.com:5984 \\
             --username admin \\
