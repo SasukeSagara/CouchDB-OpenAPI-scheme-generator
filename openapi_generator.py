@@ -113,8 +113,14 @@ class CouchDBSwaggerGenerator:
         is used to generate the OpenAPI specification with the correct CouchDB
         version in the API metadata.
 
+        The method first attempts to connect without authentication, as most
+        CouchDB endpoints (including server info) are publicly accessible.
+        If authentication is required (401 error) and credentials are provided,
+        the request is retried with authentication.
+
         Returns:
-            dict: Dictionary with server information in JSON format. Typical structure:
+            dict | None: Dictionary with server information in JSON format, or None
+                if the server is not accessible. Typical structure:
                 {
                     "couchdb": "Welcome",
                     "version": "3.3.0",
@@ -127,33 +133,42 @@ class CouchDBSwaggerGenerator:
                     }
                 }
 
-        Raises:
-            SystemExit: Exit the program with code 1 on connection error,
-                server unavailability, network issues, or invalid credentials.
-                Error message is printed to stderr.
-
         Note:
-            - Method uses basic HTTP authentication if it was configured
-              during class initialization
-            - On connection error, the program exits immediately
-            - For successful execution, CouchDB server must be accessible
-              at the specified base_url
+            - Method first attempts connection without authentication
+            - If 401 error occurs and credentials are available, retries with authentication
+            - Returns None if server is not accessible (allows schema generation to continue)
+            - For successful execution, CouchDB server should be accessible
+              at the specified base_url, but schema generation can proceed without it
 
         Example:
             >>> generator = CouchDBSwaggerGenerator()
             >>> info = generator.get_server_info()
-            >>> print(info["version"])
+            >>> if info:
+            ...     print(info["version"])
             '3.3.0'
-            >>> print(info["features"])
-            ['access-ready', 'partitioned', 'pluggable-storage-engines']
         """
+        # First, try without authentication (most CouchDB endpoints are public)
         try:
-            response = requests.get(self.base_url, auth=self.auth)
+            response = requests.get(self.base_url, auth=None)
             response.raise_for_status()
             return response.json()
-        except requests.RequestException as e:
-            print(f"Error connecting to CouchDB: {e}", file=sys.stderr)
-            sys.exit(1)
+        except requests.HTTPError as e:
+            # If we got 401 and have credentials, try with authentication
+            if e.response.status_code == 401 and self.auth is not None:
+                try:
+                    response = requests.get(self.base_url, auth=self.auth)
+                    response.raise_for_status()
+                    return response.json()
+                except requests.RequestException:
+                    # If authenticated request also fails, return None
+                    # Schema generation can continue without server info
+                    return None
+            # For other HTTP errors or if no credentials available, return None
+            return None
+        except requests.RequestException:
+            # For connection errors, return None instead of exiting
+            # Schema generation can continue without server info
+            return None
 
     def generate_openapi_spec(self, version="3.0.0"):
         """
@@ -187,9 +202,11 @@ class CouchDBSwaggerGenerator:
                 - security (list): Default security settings
 
         Note:
-            - Method performs a request to the server via get_server_info() to
-              get the CouchDB version
-            - On connection error, the program exits
+            - Method attempts to query the server via get_server_info() to
+              get the CouchDB version, but can proceed without it if the server
+              is not accessible (version will be set to "unknown")
+            - Schema generation does not require server access - most endpoints
+              and schemas are statically defined
             - Specification is compatible with tools like Swagger UI,
               Postman, Insomnia, and other OpenAPI-compatible clients
 
@@ -204,7 +221,15 @@ class CouchDBSwaggerGenerator:
             ['/', '/_all_dbs', '/{db}', '/{db}/_all_docs', '/_users', '/_users/{user_id}']
         """
         server_info = self.get_server_info()
-        couchdb_version = server_info.get("version", "unknown")
+        if server_info:
+            couchdb_version = server_info.get("version", "unknown")
+        else:
+            couchdb_version = "unknown"
+            print(
+                "Warning: Could not connect to CouchDB server. "
+                "Generating schema without server version information.",
+                file=sys.stderr,
+            )
 
         openapi_spec = {
             "openapi": version,
