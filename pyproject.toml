@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "couchdb-openapi-scheme-generator"
-version = "1.1.0"
+version = "1.2.0"
 description = "CouchDB OpenAPI scheme generator"
 readme = "README.md"
 requires-python = ">=3.11"

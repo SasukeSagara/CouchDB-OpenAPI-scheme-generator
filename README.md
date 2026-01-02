@@ -78,7 +78,7 @@
 | 📄 **OpenAPI 3.0** | Modern OpenAPI specification generator | ✅ Ready |
 | 🔧 **CLI Tool** | Easy-to-use command-line interface | ✅ Ready |
 | 📊 **JSON/YAML** | Support for both JSON and YAML output formats | ✅ Ready |
-| 🔐 **Authentication** | Built-in support for CouchDB authentication | ✅ Ready |
+| 🔐 **Authentication** | Optional authentication support (most endpoints are public) | ✅ Ready |
 | ⚡ **Fast Setup** | Get started in minutes | ✅ Ready |
 | 📚 **Comprehensive API Coverage** | Full coverage of CouchDB API endpoints according to official documentation | ✅ Ready |
 | 🎯 **Server Endpoints** | Complete server management endpoints (tasks, cluster, nodes, etc.) | ✅ Ready |
@@ -236,10 +236,14 @@ Generate the OpenAPI specification for CouchDB API using one of the following me
 #### Method 1: Using uvx (Recommended)
 
 ```bash
-# Basic usage (local server)
+# Basic usage (local server, no authentication required)
 uvx couchdb-openapi-scheme-generator
 
-# With URL and credentials specified
+# With URL specified (authentication optional)
+uvx couchdb-openapi-scheme-generator \
+  --url http://localhost:5984
+
+# With URL and credentials (only if server requires authentication)
 uvx couchdb-openapi-scheme-generator \
   --url http://localhost:5984 \
   --username admin \
@@ -259,10 +263,13 @@ uvx couchdb-openapi-scheme-generator \
 If you installed the package using `pip`, `uv`, or `pipx`:
 
 ```bash
-# Basic usage
+# Basic usage (no authentication required for most servers)
 couchdb-openapi-scheme-generator
 
-# With all options
+# With URL only
+couchdb-openapi-scheme-generator --url http://localhost:5984
+
+# With all options (authentication only if required)
 couchdb-openapi-scheme-generator \
   --url http://localhost:5984 \
   --username admin \
@@ -288,10 +295,12 @@ python openapi_generator.py
 | Parameter | Short | Description | Default |
 |-----------|-------|-------------|---------|
 | `--url` | `-u` | CouchDB server URL | `http://localhost:5984` |
-| `--username` | - | Username for authentication | - |
-| `--password` | - | Password for authentication | - |
+| `--username` | - | Username for authentication (optional) | - |
+| `--password` | - | Password for authentication (optional) | - |
 | `--output` | `-o` | Output file name | `couchdb-openapi.json` |
 | `--format` | `-f` | Output format (`json` or `yaml`) | `json` |
+
+> 💡 **Note:** Authentication is optional for most operations. The generator first attempts to connect without authentication, as most CouchDB endpoints (including server info) are publicly accessible. If your server requires authentication, you can provide credentials using `--username` and `--password` parameters.
 
 #### 📚 Generated Specification
 
@@ -300,9 +309,11 @@ The generated OpenAPI specification includes:
 - ✅ **60+ API endpoints** covering all major CouchDB operations
 - ✅ **Complete request/response schemas** for all endpoints
 - ✅ **Query parameters** and path parameters properly documented
-- ✅ **Authentication support** via Basic Auth
+- ✅ **Authentication support** via Basic Auth (optional - most endpoints are public)
 - ✅ **Error responses** with appropriate HTTP status codes
 - ✅ **Compatible with** Swagger UI, Postman, Insomnia, and other OpenAPI tools
+
+> 📝 **Important:** Most of the information in the OpenAPI specification is statically defined and does not require a connection to the CouchDB server. The generator only queries the server to retrieve the CouchDB version for inclusion in the specification metadata. If the server is not accessible or requires authentication, you can still generate a complete specification (version will be set to "unknown").
 
 The specification is based on the [official CouchDB API documentation](https://docs.couchdb.org/en/stable/api/) and includes endpoints for:
 
